@@ -7,17 +7,19 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="158*" />
+            <ColumnDefinition Width="173*" />
+            <ColumnDefinition Width="186*"/>
         </Grid.ColumnDefinitions>
 
         <Button Name="Browse" Grid.Row="0" Grid.Column="0" Click="Browse_OnClick">Browse</Button>
-        <Image Name="OriginalImage" Grid.Row="1" Grid.Column="0" />
+        <Image Name="OriginalImage" Grid.Row="1" Grid.Column="0" Stretch="None" Grid.ColumnSpan="2" Margin="0,0,73,0" />
 
         <Button Name="Grayscale" Grid.Row="0" Grid.Column="1" Click="Grayscale_OnClick">Grayscale</Button>
-        <Image Name="GrayscaleImage" Grid.Row="1" Grid.Column="1" />
+        <Image Name="OutputImage" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Stretch="None" Margin="100,0,0,0" />
+        <Button x:Name="HistogramEqualizationButton" Content="Histogram Equalization" Grid.Column="2" HorizontalAlignment="Left" Width="186" Click="HistogramEqualizationButton_Click"/>
 
     </Grid>
 </Window>
