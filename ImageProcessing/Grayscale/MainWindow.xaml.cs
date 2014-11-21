@@ -13,12 +13,10 @@ namespace Grayscale
     /// </summary>
     public partial class MainWindow
     {
-        Boolean isGrayscaled;
-        int[] frequencyOfImageAr;
-        int[] cdfAr;        
+        public bool IsGrayscaled { get; set; }
+
         public MainWindow()
         {
-            isGrayscaled = false;
             InitializeComponent();
         }
 
@@ -51,13 +49,13 @@ namespace Grayscale
             src.EndInit();
 
             OriginalImage.Source = src;
-            isGrayscaled = false;
+            IsGrayscaled = false;
         }
 
         private void Grayscale_OnClick(object sender, RoutedEventArgs e)
         {
             OutputImage.Source = MakeGrayscale();
-            isGrayscaled = true;
+            IsGrayscaled = true;
         }
 
         public ImageSource MakeGrayscale()
@@ -86,21 +84,21 @@ namespace Grayscale
         }
 
 
-        private void HistogramEqualizationButton_Click(object sender, RoutedEventArgs e)
+        private void HistogramEqualization_Click(object sender, RoutedEventArgs e)
         {
-            if (isGrayscaled == false)
+            if (IsGrayscaled == false)
             {                
                 OutputImage.Source = MakeGrayscale();
-                isGrayscaled = true;
+                IsGrayscaled = true;
             }
 
             // calculate the frequency of the image
-            
-            frequencyOfImageAr = new int[256];           
-            var grayscaledBitmap = BitmapFactory.ConvertToPbgra32Format(OutputImage.Source as BitmapSource);
-            for (int i = 0; i < grayscaledBitmap.PixelWidth; i++)
+            var frequencyOfImageAr = new int[256];
+            var grayscaledBitmap = (WriteableBitmap)OutputImage.Source;
+
+            for (var i = 0; i < grayscaledBitmap.PixelWidth; i++)
             {
-                for (int j = 0; j < grayscaledBitmap.PixelHeight; j++)
+                for (var j = 0; j < grayscaledBitmap.PixelHeight; j++)
                 {
                     //get the pixel from the original image
                     var originalColor = grayscaledBitmap.GetPixel(i, j);
@@ -109,17 +107,18 @@ namespace Grayscale
             }
                 
             // calculate the cuf function
-            cdfAr = new int[256];
+            var cdfArray = new int[256];
             int numberOfPixelsInImage = grayscaledBitmap.PixelWidth * grayscaledBitmap.PixelHeight;
             int cufCounter = numberOfPixelsInImage;
             int cdfMinValue = numberOfPixelsInImage;
+
             for (int i = 255; i >= 0; i--)
             {
-                cdfAr[i] = cufCounter - frequencyOfImageAr[i];
+                cdfArray[i] = cufCounter - frequencyOfImageAr[i];
                 cufCounter -= frequencyOfImageAr[i];
-                if (cdfAr[i] != 0 && cdfAr[i] < cdfMinValue)
+                if (cdfArray[i] != 0 && cdfArray[i] < cdfMinValue)
                 {
-                    cdfMinValue = cdfAr[i];
+                    cdfMinValue = cdfArray[i];
                 }
             }
 
@@ -133,13 +132,14 @@ namespace Grayscale
 
                     //create the grayscale version of the pixel
                     //int hi = (cdfAr[originalColor.R] - cdfMinValue) / (numberOfPixelsInImage)
-                    var hi = Math.Round((double)((double)(cdfAr[originalColor.R] - cdfMinValue) / (double)(numberOfPixelsInImage - cdfMinValue)) * 255);
+                    var hi = Math.Round((cdfArray[originalColor.R] - cdfMinValue) / (double)(numberOfPixelsInImage - cdfMinValue) * 255);
 
                     //set the new image's pixel to the grayscale version
                     newBitmap.SetPixel(i, j, Color.FromRgb((byte)hi, (byte)hi, (byte)hi));
                 }
             }
-            isGrayscaled = false;
+
+            IsGrayscaled = false;
             OutputImage.Source = newBitmap;
         }
     }
