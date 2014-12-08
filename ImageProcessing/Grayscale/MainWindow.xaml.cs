@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
-using Color = System.Windows.Media.Color;
+using Color = System.Drawing.Color;
 
 namespace Grayscale
 {
@@ -13,7 +15,7 @@ namespace Grayscale
     /// </summary>
     public partial class MainWindow
     {
-        public bool IsGrayscaled { get; set; }
+        private Bitmap _grayScaleBitmap;
 
         public MainWindow()
         {
@@ -25,7 +27,7 @@ namespace Grayscale
             var openFileDialog = new OpenFileDialog
             {
                 Title = "Open Image",
-                Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg",
+                Filter = "Image Files (*.jpg,*.jpeg,*.png)|*.jpg;*.jpeg;*.png",
                 Multiselect = false
             };
 
@@ -42,32 +44,19 @@ namespace Grayscale
                 return;
             }
 
-            var src = new BitmapImage();
-            src.BeginInit();
-            src.UriSource = new Uri(openFileDialog.FileName, UriKind.Absolute);
-            src.CacheOption = BitmapCacheOption.OnLoad;
-            src.EndInit();
+            _grayScaleBitmap = MakeGrayscale(new Bitmap(openFileDialog.FileName));
 
-            OriginalImage.Source = src;
-            IsGrayscaled = false;
+            OriginalImage.Source = BitmapUtils.ConvertBitmap(_grayScaleBitmap);
         }
 
-        private void Grayscale_OnClick(object sender, RoutedEventArgs e)
+        public Bitmap MakeGrayscale(Bitmap original)
         {
-            OutputImage.Source = MakeGrayscale();
-            IsGrayscaled = true;
-        }
-
-        public ImageSource MakeGrayscale()
-        {
-            var original = BitmapFactory.ConvertToPbgra32Format(OriginalImage.Source as BitmapSource);
-
             //make an empty bitmap the same size as original
-            var newBitmap = new WriteableBitmap((BitmapSource)OriginalImage.Source);
+            var newBitmap = new Bitmap(original.Width, original.Height);
 
-            for (int i = 0; i < original.PixelWidth; i++)
+            for (int i = 0; i < original.Width; i++)
             {
-                for (int j = 0; j < original.PixelHeight; j++)
+                for (int j = 0; j < original.Height; j++)
                 {
                     //get the pixel from the original image
                     var originalColor = original.GetPixel(i, j);
@@ -76,39 +65,39 @@ namespace Grayscale
                     var grayScale = (byte) ((originalColor.R*.3) + (originalColor.G*.59) + (originalColor.B*.11));
 
                     //set the new image's pixel to the grayscale version
-                    newBitmap.SetPixel(i, j, Color.FromRgb(grayScale, grayScale, grayScale));
+                    newBitmap.SetPixel(i, j, Color.FromArgb(grayScale, grayScale, grayScale));
                 }
             }
-            
+
             return newBitmap;
         }
 
-
         private void HistogramEqualization_Click(object sender, RoutedEventArgs e)
         {
-            if (IsGrayscaled == false)
-            {                
-                OutputImage.Source = MakeGrayscale();
-                IsGrayscaled = true;
-            }
+            var newBitmap = MakeHistogramEqualization();
 
+            OutputImage.Source = BitmapUtils.ConvertBitmap(newBitmap);
+        }
+
+        private Bitmap MakeHistogramEqualization()
+        {
             // calculate the frequency of the image
             var frequencyOfImageAr = new int[256];
-            var grayscaledBitmap = (WriteableBitmap)OutputImage.Source;
+            var grayscaledBitmap = _grayScaleBitmap;
 
-            for (var i = 0; i < grayscaledBitmap.PixelWidth; i++)
+            for (var i = 0; i < grayscaledBitmap.Width; i++)
             {
-                for (var j = 0; j < grayscaledBitmap.PixelHeight; j++)
+                for (var j = 0; j < grayscaledBitmap.Height; j++)
                 {
                     //get the pixel from the original image
                     var originalColor = grayscaledBitmap.GetPixel(i, j);
                     frequencyOfImageAr[originalColor.R]++;
                 }
             }
-                
+
             // calculate the cuf function
             var cdfArray = new int[256];
-            int numberOfPixelsInImage = grayscaledBitmap.PixelWidth * grayscaledBitmap.PixelHeight;
+            int numberOfPixelsInImage = grayscaledBitmap.Width*grayscaledBitmap.Height;
             int cufCounter = numberOfPixelsInImage;
             int cdfMinValue = numberOfPixelsInImage;
 
@@ -122,25 +111,67 @@ namespace Grayscale
                 }
             }
 
-            var newBitmap = new WriteableBitmap((BitmapSource)OutputImage.Source);
-            for (int i = 0; i < newBitmap.PixelWidth; i++)
+            var newBitmap = new Bitmap(_grayScaleBitmap.Width, _grayScaleBitmap.Height);
+            for (int i = 0; i < newBitmap.Width; i++)
             {
-                for (int j = 0; j < newBitmap.PixelHeight; j++)
+                for (int j = 0; j < newBitmap.Height; j++)
                 {
                     //get the pixel from the original image
                     var originalColor = grayscaledBitmap.GetPixel(i, j);
 
                     //create the grayscale version of the pixel
                     //int hi = (cdfAr[originalColor.R] - cdfMinValue) / (numberOfPixelsInImage)
-                    var hi = Math.Round((cdfArray[originalColor.R] - cdfMinValue) / (double)(numberOfPixelsInImage - cdfMinValue) * 255);
+                    var hi =
+                        Math.Round((cdfArray[originalColor.R] - cdfMinValue)/
+                                   (double) (numberOfPixelsInImage - cdfMinValue)*255);
 
                     //set the new image's pixel to the grayscale version
-                    newBitmap.SetPixel(i, j, Color.FromRgb((byte)hi, (byte)hi, (byte)hi));
+                    newBitmap.SetPixel(i, j, Color.FromArgb((byte) hi, (byte) hi, (byte) hi));
                 }
             }
+            return newBitmap;
+        }
 
-            IsGrayscaled = false;
-            OutputImage.Source = newBitmap;
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Filter_Click(object sender, RoutedEventArgs e)
+        {
+            var inputFilterDialog = new InputFilterDialog();
+
+            var dialogResult = inputFilterDialog.ShowDialog();
+
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                return;
+            }
+
+            var filterMatrix = inputFilterDialog.FilterMatrix;
+        }
+    }
+
+    public class BitmapUtils
+    {
+        [DllImport("gdi32")]
+        private static extern int DeleteObject(IntPtr o);
+
+        public static BitmapSource ConvertBitmap(Bitmap source)
+        {
+            IntPtr ip = source.GetHbitmap();
+            BitmapSource bs;
+            try
+            {
+                bs = Imaging.CreateBitmapSourceFromHBitmap(ip, IntPtr.Zero, Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+            }
+            finally
+            {
+                DeleteObject(ip);
+            }
+
+            return bs;
         }
     }
 }
