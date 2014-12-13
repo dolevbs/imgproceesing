@@ -148,6 +148,8 @@ namespace Grayscale
                 return;
             }
 
+            var targetCell = inputFilterDialog.TargetCellIndex;
+            var selectedSize = inputFilterDialog.SelectedSize;
             var filterMatrix = inputFilterDialog.FilterMatrix;
         }
     }

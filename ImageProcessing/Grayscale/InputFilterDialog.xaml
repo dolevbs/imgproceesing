@@ -3,23 +3,31 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="InputFilterDialog" Height="300" Width="300">
   <Window.Resources>
-    <Style x:Key="ToggleRadio" TargetType="RadioButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
-      <Setter Property="GroupName" Value="FilterCells" />
-      <Setter Property="IsChecked" Value="{Binding IsTarget}" />
-      <Setter Property="ContentTemplate">
+    <Style x:Key="ToggleRadio" TargetType="RadioButton">
+      <Setter Property="Template">
         <Setter.Value>
-          <DataTemplate>
+          <ControlTemplate>
             <Grid>
-              <TextBox />
+              <RadioButton IsChecked="{Binding IsSelected}" GroupName="FilterCells" HorizontalContentAlignment="Stretch" Style="{StaticResource {x:Type ToggleButton}}">
+                <TextBox Text="{Binding Value}" Margin="2" />
+              </RadioButton>
             </Grid>
-          </DataTemplate>
+          </ControlTemplate>
         </Setter.Value>
       </Setter>
     </Style>
   </Window.Resources>
 
-  <DockPanel LastChildFill="True">
-    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+  <Grid>
+
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+
+    <StackPanel Grid.Row="0" Orientation="Horizontal">
       <Label>Choose Filter Size:</Label>
       <ComboBox SelectionChanged="Selector_OnSelectionChanged">
         <ComboBoxItem Tag="2">2x2</ComboBoxItem>
@@ -30,8 +38,14 @@
         <ComboBoxItem Tag="7">7x7</ComboBoxItem>
         <ComboBoxItem Tag="8">8x8</ComboBoxItem>
       </ComboBox>
+      <Label>Values divisor:</Label>
+      <TextBox Text="{Binding Divisor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
     </StackPanel>
 
-    <Grid Name="FilterGrid" />
-  </DockPanel>
+    <Grid Grid.Row="1" Name="FilterGrid" />
+    <StackPanel Grid.Row="2" Orientation="Horizontal">
+      <Button Content="Ok" IsDefault="True" Click="ButtonBase_OnClick" />
+      <Button Content="Cancel" IsCancel="True" />
+    </StackPanel>
+  </Grid>
 </Window>
