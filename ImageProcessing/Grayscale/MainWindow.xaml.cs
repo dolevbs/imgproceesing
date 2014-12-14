@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
+using Point = System.Drawing.Point;
 using Color = System.Drawing.Color;
 
 namespace Grayscale
@@ -121,10 +122,8 @@ namespace Grayscale
 
                     //create the grayscale version of the pixel
                     //int hi = (cdfAr[originalColor.R] - cdfMinValue) / (numberOfPixelsInImage)
-                    var hi =
-                        Math.Round((cdfArray[originalColor.R] - cdfMinValue)/
-                                   (double) (numberOfPixelsInImage - cdfMinValue)*255);
-
+                    var hi = roundAndClampColor((cdfArray[originalColor.R] - cdfMinValue) / (double) (numberOfPixelsInImage - cdfMinValue)*255d);
+                    
                     //set the new image's pixel to the grayscale version
                     newBitmap.SetPixel(i, j, Color.FromArgb((byte) hi, (byte) hi, (byte) hi));
                 }
@@ -143,14 +142,71 @@ namespace Grayscale
 
             var dialogResult = inputFilterDialog.ShowDialog();
 
-            if (dialogResult.HasValue && dialogResult.Value)
+            if (!dialogResult.HasValue && dialogResult.Value)
             {
                 return;
             }
 
-            var targetCell = inputFilterDialog.TargetCellIndex;
-            var selectedSize = inputFilterDialog.SelectedSize;
-            var filterMatrix = inputFilterDialog.FilterMatrix;
+            Point targetCell = inputFilterDialog.TargetCellIndex;
+            double[,] filterMatrix = inputFilterDialog.filterMatrix;
+
+            if (null == filterMatrix)
+            {
+                return;
+            }
+            Bitmap newBitmap = filterSource(targetCell, filterMatrix);
+            
+            OutputImage.Source = BitmapUtils.ConvertBitmap(newBitmap);
+        }
+
+        private Bitmap filterSource(Point target, double[,] filterMatrix)
+        {
+            var grayscaledBitmap = _grayScaleBitmap;
+            var newBitmap = new Bitmap(grayscaledBitmap.Width - filterMatrix.GetLength(0), grayscaledBitmap.Height - filterMatrix.GetLength(1));
+
+            var startI = target.X;
+            var startJ = target.Y;
+            var right = filterMatrix.GetLength(0)- ( target.X);
+            var down = filterMatrix.GetLength(1) - (target.Y);
+
+            for (int i = startI; i < grayscaledBitmap.Width - right ; i++)
+            {
+                for (int j = startJ; j < grayscaledBitmap.Height- down; j++)
+                {
+                    var filterd = calculateFilterOnPoint(new Point(i - startI, j - startJ), filterMatrix);
+                    newBitmap.SetPixel(i - startI, j - startJ, Color.FromArgb(filterd, filterd, filterd));
+                }
+            }
+            return newBitmap;
+        }
+        private byte calculateFilterOnPoint(Point target, double[,] filterMatrix) {
+
+            double calculatedValue = 0;
+            var grayscaledBitmap = _grayScaleBitmap;
+
+            for (var i = 0; i < filterMatrix.GetLength(0); i++)
+            {
+                for (var j = 0; j < filterMatrix.GetLength(1); j++)
+                {
+                    var originalColor = grayscaledBitmap.GetPixel(target.X + i, target.Y + j);
+                    calculatedValue += originalColor.R * filterMatrix[i, j];
+                }
+            }            
+            return roundAndClampColor(calculatedValue);
+        }
+
+        private byte roundAndClampColor(double value)
+        {
+            var rounded = Math.Round(value);
+            if (rounded > 255)
+            {
+                rounded = 255;
+            }
+            else if (rounded < 0)
+            {
+                rounded = 0;
+            }
+            return (byte)rounded;
         }
     }
 

@@ -12,14 +12,14 @@ namespace Grayscale
     {
         public InputFilterDialog()
         {
-            Divisor = 1;
-
+            Divisor = 1;            
             InitializeComponent();
         }
 
-        public Point TargetCellIndex { get; set; }
+        public System.Drawing.Point TargetCellIndex { get; set; }
 
-        public FilterCell[,] FilterMatrix { get; set; }
+        public double[,] filterMatrix { get; set; }
+        private FilterCell[,] FilterCellMatrix { get; set; }
 
         public double Divisor { get; set; }
 
@@ -44,14 +44,14 @@ namespace Grayscale
                 FilterGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
 
-            FilterMatrix = new FilterCell[SelectedSize, SelectedSize];
+            FilterCellMatrix = new FilterCell[SelectedSize, SelectedSize];
 
             for (int i = 0; i < SelectedSize; i++)
             {
                 for (int j = 0; j < SelectedSize; j++)
                 {
                     var dataContext = new FilterCell();
-
+                    dataContext.Value = 1;
                     var cell = new RadioButton
                     {
                         Style = Resources["ToggleRadio"] as Style,
@@ -61,7 +61,7 @@ namespace Grayscale
                     Grid.SetRow(cell, i);
                     Grid.SetColumn(cell, j);
 
-                    FilterMatrix[i, j] = dataContext;
+                    FilterCellMatrix[i, j] = dataContext;
                     FilterGrid.Children.Add(cell);
                 }
             }
@@ -71,29 +71,26 @@ namespace Grayscale
         {
             DialogResult = true;
 
-            if (Math.Abs(Divisor - 1) > double.Epsilon)
+            //if (Math.Abs(Divisor - 1) > double.Epsilon)
             {
+                filterMatrix = new double[SelectedSize, SelectedSize];
                 for (int i = 0; i < SelectedSize; i++)
                 {
                     for (int j = 0; j < SelectedSize; j++)
                     {
-                        FilterMatrix[i,j].Value /= Divisor;
-                        if (FilterMatrix[i, j].IsSelected)
+                        filterMatrix[i, j] = FilterCellMatrix[i, j].Value / Divisor;
+                        if (FilterCellMatrix[i, j].IsSelected)
                         {
-                            TargetCellIndex = new Point(i, j);
+                            TargetCellIndex = new System.Drawing.Point(j, i);
                         }
                     }
-                }
-
-                foreach (var filterCell in FilterMatrix)
-                {
                 }
             }
 
 
         }
 
-        public class FilterCell
+        private class FilterCell
         {
             public bool IsSelected { get; set; }
             public double Value { get; set; }
