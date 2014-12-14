@@ -122,10 +122,12 @@ namespace Grayscale
 
                     //create the grayscale version of the pixel
                     //int hi = (cdfAr[originalColor.R] - cdfMinValue) / (numberOfPixelsInImage)
-                    var hi = roundAndClampColor((cdfArray[originalColor.R] - cdfMinValue) / (double) (numberOfPixelsInImage - cdfMinValue)*255d);
-                    
+                    var hi =
+                        RoundAndClampColor((cdfArray[originalColor.R] - cdfMinValue)/
+                                           (double) (numberOfPixelsInImage - cdfMinValue)*255d);
+
                     //set the new image's pixel to the grayscale version
-                    newBitmap.SetPixel(i, j, Color.FromArgb((byte) hi, (byte) hi, (byte) hi));
+                    newBitmap.SetPixel(i, j, Color.FromArgb(hi, hi, hi));
                 }
             }
             return newBitmap;
@@ -142,45 +144,50 @@ namespace Grayscale
 
             var dialogResult = inputFilterDialog.ShowDialog();
 
-            if (!dialogResult.HasValue && dialogResult.Value)
+            if (!dialogResult.HasValue || !dialogResult.Value)
             {
                 return;
             }
 
             Point targetCell = inputFilterDialog.TargetCellIndex;
-            double[,] filterMatrix = inputFilterDialog.filterMatrix;
+            double[,] filterMatrix = inputFilterDialog.FilterMatrix;
 
             if (null == filterMatrix)
             {
                 return;
             }
-            Bitmap newBitmap = filterSource(targetCell, filterMatrix);
-            
+
+            Bitmap newBitmap = FilterSource(targetCell, filterMatrix);
+
             OutputImage.Source = BitmapUtils.ConvertBitmap(newBitmap);
         }
 
-        private Bitmap filterSource(Point target, double[,] filterMatrix)
+        private Bitmap FilterSource(Point target, double[,] filterMatrix)
         {
             var grayscaledBitmap = _grayScaleBitmap;
-            var newBitmap = new Bitmap(grayscaledBitmap.Width - filterMatrix.GetLength(0), grayscaledBitmap.Height - filterMatrix.GetLength(1));
+            var filterSize = filterMatrix.GetLength(0);
+
+            var newBitmap = new Bitmap(grayscaledBitmap.Width - filterSize, grayscaledBitmap.Height - filterSize);
 
             var startI = target.X;
             var startJ = target.Y;
-            var right = filterMatrix.GetLength(0)- ( target.X);
-            var down = filterMatrix.GetLength(1) - (target.Y);
+            var right = filterSize - target.X;
+            var down = filterSize - target.Y;
 
-            for (int i = startI; i < grayscaledBitmap.Width - right ; i++)
+            for (int i = startI; i < grayscaledBitmap.Width - right; i++)
             {
-                for (int j = startJ; j < grayscaledBitmap.Height- down; j++)
+                for (int j = startJ; j < grayscaledBitmap.Height - down; j++)
                 {
-                    var filterd = calculateFilterOnPoint(new Point(i - startI, j - startJ), filterMatrix);
+                    var filterd = CalculateFilterOnPoint(new Point(i - startI, j - startJ), filterMatrix);
                     newBitmap.SetPixel(i - startI, j - startJ, Color.FromArgb(filterd, filterd, filterd));
                 }
             }
+
             return newBitmap;
         }
-        private byte calculateFilterOnPoint(Point target, double[,] filterMatrix) {
 
+        private byte CalculateFilterOnPoint(Point target, double[,] filterMatrix)
+        {
             double calculatedValue = 0;
             var grayscaledBitmap = _grayScaleBitmap;
 
@@ -189,13 +196,14 @@ namespace Grayscale
                 for (var j = 0; j < filterMatrix.GetLength(1); j++)
                 {
                     var originalColor = grayscaledBitmap.GetPixel(target.X + i, target.Y + j);
-                    calculatedValue += originalColor.R * filterMatrix[i, j];
+                    calculatedValue += originalColor.R*filterMatrix[i, j];
                 }
-            }            
-            return roundAndClampColor(calculatedValue);
+            }
+
+            return RoundAndClampColor(calculatedValue);
         }
 
-        private byte roundAndClampColor(double value)
+        private static byte RoundAndClampColor(double value)
         {
             var rounded = Math.Round(value);
             if (rounded > 255)
@@ -206,7 +214,7 @@ namespace Grayscale
             {
                 rounded = 0;
             }
-            return (byte)rounded;
+            return (byte) rounded;
         }
     }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,7 +17,7 @@ namespace Grayscale
 
         public System.Drawing.Point TargetCellIndex { get; set; }
 
-        public double[,] filterMatrix { get; set; }
+        public double[,] FilterMatrix { get; set; }
         private FilterCell[,] FilterCellMatrix { get; set; }
 
         public double Divisor { get; set; }
@@ -50,8 +49,8 @@ namespace Grayscale
             {
                 for (int j = 0; j < SelectedSize; j++)
                 {
-                    var dataContext = new FilterCell();
-                    dataContext.Value = 1;
+                    var dataContext = new FilterCell {Value = 1};
+
                     var cell = new RadioButton
                     {
                         Style = Resources["ToggleRadio"] as Style,
@@ -71,26 +70,23 @@ namespace Grayscale
         {
             DialogResult = true;
 
-            //if (Math.Abs(Divisor - 1) > double.Epsilon)
+
+            FilterMatrix = new double[SelectedSize, SelectedSize];
+            for (int i = 0; i < SelectedSize; i++)
             {
-                filterMatrix = new double[SelectedSize, SelectedSize];
-                for (int i = 0; i < SelectedSize; i++)
+                for (int j = 0; j < SelectedSize; j++)
                 {
-                    for (int j = 0; j < SelectedSize; j++)
+                    FilterMatrix[i, j] = FilterCellMatrix[i, j].Value/Divisor;
+                    if (FilterCellMatrix[i, j].IsSelected)
                     {
-                        filterMatrix[i, j] = FilterCellMatrix[i, j].Value / Divisor;
-                        if (FilterCellMatrix[i, j].IsSelected)
-                        {
-                            TargetCellIndex = new System.Drawing.Point(j, i);
-                        }
+                        TargetCellIndex = new System.Drawing.Point(j, i);
                     }
                 }
+
             }
-
-
         }
 
-        private class FilterCell
+        internal class FilterCell
         {
             public bool IsSelected { get; set; }
             public double Value { get; set; }
