@@ -1,6 +1,7 @@
 using System.Drawing;
+using Grayscale.AlgorithmsBase;
 
-namespace Grayscale
+namespace Grayscale.Algorithms
 {
     public class HistogramEqualization : UseGrayScaleAlgorithm
     {
@@ -9,7 +10,7 @@ namespace Grayscale
         {
         }
 
-        public override Bitmap Execute()
+        public override void Execute()
         {
             // calculate the frequency of the image
             var frequencyOfImageAr = new int[256];
@@ -59,7 +60,8 @@ namespace Grayscale
                     newBitmap.SetPixel(i, j, Color.FromArgb(hi, hi, hi));
                 }
             }
-            return newBitmap;
+
+            Result = newBitmap;
         }
     }
 }

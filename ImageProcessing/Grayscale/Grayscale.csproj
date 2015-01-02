@@ -55,8 +55,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BlackAndWhiteAlgorithm.cs" />
-    <Compile Include="UseGrayScaleAlgorithm.cs" />
+    <Compile Include="AlgorithmsBase\BitmapAlgorithm.cs" />
+    <Compile Include="Algorithms\BlackAndWhiteAlgorithm.cs" />
+    <Compile Include="AlgorithmsBase\IBitmapSource.cs" />
+    <Compile Include="AlgorithmsBase\SimpleBitmapSource.cs" />
+    <Compile Include="AlgorithmsBase\UseBlackAndWhiteAlgorithm.cs" />
+    <Compile Include="AlgorithmsBase\UseGrayScaleAlgorithm.cs" />
     <Page Include="InputFilterDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -69,9 +73,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FilterAlgorithm.cs" />
-    <Compile Include="GrayScaleAlgorithm.cs" />
-    <Compile Include="HistogramEqualization.cs" />
+    <Compile Include="Algorithms\FilterAlgorithm.cs" />
+    <Compile Include="Algorithms\GrayScaleAlgorithm.cs" />
+    <Compile Include="Algorithms\HistogramEqualization.cs" />
     <Compile Include="InputFilterDialog.xaml.cs">
       <DependentUpon>InputFilterDialog.xaml</DependentUpon>
     </Compile>

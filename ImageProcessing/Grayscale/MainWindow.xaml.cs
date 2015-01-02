@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using Grayscale.Algorithms;
+using Grayscale.AlgorithmsBase;
 using Microsoft.Win32;
 using Point = System.Drawing.Point;
 
@@ -16,6 +18,7 @@ namespace Grayscale
     public partial class MainWindow
     {
         private GrayScaleAlgorithm _grayScaleAlgorithm;
+        private BlackAndWhiteAlgorithm _blackAndWhiteAlgorithm;
 
         public MainWindow()
         {
@@ -49,15 +52,24 @@ namespace Grayscale
             var simpleBitmapSource = new SimpleBitmapSource(bitmap);
 
             _grayScaleAlgorithm = new GrayScaleAlgorithm(simpleBitmapSource);
+            _blackAndWhiteAlgorithm = new BlackAndWhiteAlgorithm(_grayScaleAlgorithm);
 
-            OriginalImage.Source = BitmapUtils.ConvertBitmap(_grayScaleAlgorithm.Bitmap);
+            OriginalImage.Source = BitmapUtils.ConvertBitmap(bitmap);
         }
 
         private void HistogramEqualization_Click(object sender, RoutedEventArgs e)
         {
-            var newBitmap = new HistogramEqualization(_grayScaleAlgorithm).Execute();
+            var algorithem = new HistogramEqualization(_grayScaleAlgorithm);
 
-            OutputImage.Source = BitmapUtils.ConvertBitmap(newBitmap);
+            ExecuteAndSetImages(algorithem);
+        }
+
+        private void ExecuteAndSetImages(BitmapAlgorithm algorithem)
+        {
+            algorithem.Execute();
+
+            OriginalImage.Source = BitmapUtils.ConvertBitmap(algorithem.BitmapSource.Bitmap);
+            OutputImage.Source = BitmapUtils.ConvertBitmap(algorithem.Result);
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -84,9 +96,9 @@ namespace Grayscale
                 return;
             }
 
-            Bitmap newBitmap = new FilterAlgorithm(_grayScaleAlgorithm, filterMatrix, targetCell).Execute();
+            var filterAlgorithm = new FilterAlgorithm(_grayScaleAlgorithm, filterMatrix, targetCell);
 
-            OutputImage.Source = BitmapUtils.ConvertBitmap(newBitmap);
+            ExecuteAndSetImages(filterAlgorithm);
         }
     }
 

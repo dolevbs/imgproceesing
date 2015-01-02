@@ -1,17 +1,16 @@
 using System.Drawing;
+using Grayscale.AlgorithmsBase;
 
-namespace Grayscale
+namespace Grayscale.Algorithms
 {
     public class GrayScaleAlgorithm : BitmapAlgorithm, IBitmapSource
     {
-        private Bitmap _grayScaledBitmap;
-
         public GrayScaleAlgorithm(IBitmapSource bitmapSource)
             : base(bitmapSource)
         {
         }
 
-        public override Bitmap Execute()
+        public override void Execute()
         {
             Bitmap bitmap = BitmapSource.Bitmap;
 
@@ -32,16 +31,19 @@ namespace Grayscale
                 }
             }
 
-            _grayScaledBitmap = newBitmap;
-
-            return newBitmap;
+            Result = newBitmap;
         }
 
         public Bitmap Bitmap
         {
             get
             {
-                return _grayScaledBitmap ?? Execute();
+                if (Result == null)
+                {
+                    Execute();
+                }
+
+                return Result;
             }
         }
     }

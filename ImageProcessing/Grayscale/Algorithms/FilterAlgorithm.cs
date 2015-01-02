@@ -1,6 +1,7 @@
 using System.Drawing;
+using Grayscale.AlgorithmsBase;
 
-namespace Grayscale
+namespace Grayscale.Algorithms
 {
     public class FilterAlgorithm : UseGrayScaleAlgorithm
     {
@@ -14,7 +15,7 @@ namespace Grayscale
             _target = target;
         }
 
-        public override Bitmap Execute()
+        public override void Execute()
         {
             var filterSize = _filterMatrix.GetLength(0);
 
@@ -36,7 +37,7 @@ namespace Grayscale
                 }
             }
 
-            return newBitmap;
+            Result = newBitmap;
         }
 
         private byte CalculateFilterOnPoint(Point target, double[,] filterMatrix, Bitmap grayScaleBitmap)

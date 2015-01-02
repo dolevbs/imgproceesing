@@ -1,17 +1,16 @@
 using System.Drawing;
+using Grayscale.AlgorithmsBase;
 
-namespace Grayscale
+namespace Grayscale.Algorithms
 {
     public class BlackAndWhiteAlgorithm : UseGrayScaleAlgorithm, IBitmapSource
     {
-        private Bitmap _blackAndWhiteBitmap;
-
         public BlackAndWhiteAlgorithm(GrayScaleAlgorithm bitmapSource)
             : base(bitmapSource)
         {
         }
 
-        public override Bitmap Execute()
+        public override void Execute()
         {
             //make an empty bitmap the same size as original
             var newBitmap = new Bitmap(BitmapSource.Bitmap.Width, BitmapSource.Bitmap.Height);
@@ -30,14 +29,20 @@ namespace Grayscale
                 }
             }
 
-            _blackAndWhiteBitmap = newBitmap;
-
-            return newBitmap;
+            Result = newBitmap;
         }
 
         public Bitmap Bitmap
         {
-            get { return _blackAndWhiteBitmap ?? Execute(); }
+            get
+            {
+                if (Result == null)
+                {
+                    Execute();
+                }
+
+                return Result;
+            }
         }
     }
 }
