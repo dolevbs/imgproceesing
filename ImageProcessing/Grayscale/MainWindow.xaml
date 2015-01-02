@@ -16,10 +16,10 @@
       </MenuItem>
       <MenuItem Header="Black and white algorithms">
         <MenuItem Header="_Black and white" Click="BlackAndWhite_Click" />
-        <MenuItem Header="_Erosion" />
-        <MenuItem Header="_Dilation" />
-        <MenuItem Header="_Opening" />
-        <MenuItem Header="_Closing" />
+        <MenuItem Header="_Erosion" Click="ErosionClick" />
+        <MenuItem Header="_Dilation" Click="DilationClick" />
+        <MenuItem Header="_Opening" Click="OpeningClick" />
+        <MenuItem Header="_Closing" Click="ClosingClick" />
       </MenuItem>
     </Menu>
     <Grid>

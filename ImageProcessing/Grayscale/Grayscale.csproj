@@ -65,10 +65,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="InputStructuringElementDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Algorithms\ClosingAlgorithm.cs" />
+    <Compile Include="Algorithms\DilationAlgorithm.cs" />
+    <Compile Include="Algorithms\ErosionAlgorithm.cs" />
+    <Compile Include="Algorithms\OpeningAlgorithm.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -79,12 +87,16 @@
     <Compile Include="InputFilterDialog.xaml.cs">
       <DependentUpon>InputFilterDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InputStructuringElementDialog.xaml.cs">
+      <DependentUpon>InputStructuringElementDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

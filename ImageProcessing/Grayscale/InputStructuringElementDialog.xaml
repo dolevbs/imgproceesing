@@ -1,0 +1,60 @@
+﻿<Window x:Class="Grayscale.InputStructuringElementDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="InputStructuringElementDialog" Height="300" Width="300">
+
+  <Window.Resources>
+    <Style x:Key="ToggleRadio" TargetType="RadioButton">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate>
+            <Grid>
+              <RadioButton IsChecked="{Binding IsSelected}" GroupName="FilterCells" Height="50" Width="50"
+                           HorizontalContentAlignment="Stretch" Style="{StaticResource {x:Type ToggleButton}}">
+                <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsChecked}"
+                          IsThreeState="True">
+                  <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="2" ScaleY="2" />
+                  </CheckBox.LayoutTransform>
+                </CheckBox>
+              </RadioButton>
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Window.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+    <Label Grid.Row="0" Grid.Column="0" Content="Height:" />
+    <Slider Name="HeightSlider"
+            Grid.Row="0" Grid.Column="1"
+            Value="3" Minimum="1" Maximum="10" Interval="1" IsSnapToTickEnabled="True"
+            ValueChanged="RangeBase_OnValueChanged" />
+
+    <Label Grid.Row="1" Grid.Column="0" Content="Width:" />
+    <Slider Name="WidthSlider"
+            Grid.Row="1" Grid.Column="1"
+            Value="3" Minimum="1" Maximum="10" Interval="1" IsSnapToTickEnabled="True"
+            ValueChanged="RangeBase_OnValueChanged" />
+
+    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+      <Grid Name="FilterGrid" />
+    </StackPanel>
+
+    <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+      <Button Content="Ok" IsDefault="True" Click="OnOkClick" Width="50" />
+      <Button Content="Cancel" IsCancel="True" Width="50" />
+    </StackPanel>
+
+  </Grid>
+</Window>

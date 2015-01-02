@@ -110,6 +110,68 @@ namespace Grayscale
         {
             ExecuteAndSetImages(_grayScaleAlgorithm);
         }
+
+        private static CheckBoxCell[,] GetStructuringElement()
+        {
+            var dialog = new InputStructuringElementDialog();
+
+            var dialogResult = dialog.ShowDialog();
+
+            if (!dialogResult.HasValue || !dialogResult.Value)
+            {
+                return null;
+            }
+
+            return dialog.Result;
+        }
+
+        private void ErosionClick(object sender, RoutedEventArgs e)
+        {
+            CheckBoxCell[,] checkBoxCells = GetStructuringElement();
+
+            if (checkBoxCells == null)
+            {
+                return;
+            }
+
+            ExecuteAndSetImages(new ErosionAlgorithm(_blackAndWhiteAlgorithm, checkBoxCells));
+        }
+
+        private void DilationClick(object sender, RoutedEventArgs e)
+        {
+            CheckBoxCell[,] checkBoxCells = GetStructuringElement();
+
+            if (checkBoxCells == null)
+            {
+                return;
+            }
+
+            ExecuteAndSetImages(new DilationAlgorithm(_blackAndWhiteAlgorithm, checkBoxCells));
+        }
+
+        private void OpeningClick(object sender, RoutedEventArgs e)
+        {
+            CheckBoxCell[,] checkBoxCells = GetStructuringElement();
+
+            if (checkBoxCells == null)
+            {
+                return;
+            }
+
+            ExecuteAndSetImages(new OpeningAlgorithm(_blackAndWhiteAlgorithm, checkBoxCells));
+        }
+
+        private void ClosingClick(object sender, RoutedEventArgs e)
+        {
+            CheckBoxCell[,] checkBoxCells = GetStructuringElement();
+
+            if (checkBoxCells == null)
+            {
+                return;
+            }
+
+            ExecuteAndSetImages(new ClosingAlgorithm(_blackAndWhiteAlgorithm, checkBoxCells));
+        }
     }
 
     public class BitmapUtils
