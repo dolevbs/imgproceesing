@@ -10,10 +10,12 @@
         <MenuItem Header="_Exit" Click="Exit_Click" />
       </MenuItem>
       <MenuItem Header="GrayScale algorithms">
+        <MenuItem Header="_GrayScale" Click="GrayScale_Click" />
         <MenuItem Header="_HistogramEqualization" Click="HistogramEqualization_Click" />
         <MenuItem Header="_Filter" Click="Filter_Click" />
       </MenuItem>
       <MenuItem Header="Black and white algorithms">
+        <MenuItem Header="_Black and white" Click="BlackAndWhite_Click" />
         <MenuItem Header="_Erosion" />
         <MenuItem Header="_Dilation" />
         <MenuItem Header="_Opening" />

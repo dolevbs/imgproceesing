@@ -100,6 +100,16 @@ namespace Grayscale
 
             ExecuteAndSetImages(filterAlgorithm);
         }
+
+        private void BlackAndWhite_Click(object sender, RoutedEventArgs e)
+        {
+            ExecuteAndSetImages(_blackAndWhiteAlgorithm);
+        }
+
+        private void GrayScale_Click(object sender, RoutedEventArgs e)
+        {
+            ExecuteAndSetImages(_grayScaleAlgorithm);
+        }
     }
 
     public class BitmapUtils
