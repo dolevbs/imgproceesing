@@ -7,7 +7,6 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using Point = System.Drawing.Point;
-using Color = System.Drawing.Color;
 
 namespace Grayscale
 {
@@ -16,7 +15,7 @@ namespace Grayscale
     /// </summary>
     public partial class MainWindow
     {
-        private Bitmap _grayScaleBitmap;
+        private GrayScaleAlgorithm _grayScaleAlgorithm;
 
         public MainWindow()
         {
@@ -45,92 +44,20 @@ namespace Grayscale
                 return;
             }
 
-            _grayScaleBitmap = MakeGrayscale(new Bitmap(openFileDialog.FileName));
+            var bitmap = new Bitmap(openFileDialog.FileName);
 
-            OriginalImage.Source = BitmapUtils.ConvertBitmap(_grayScaleBitmap);
-        }
+            var simpleBitmapSource = new SimpleBitmapSource(bitmap);
 
-        public Bitmap MakeGrayscale(Bitmap original)
-        {
-            //make an empty bitmap the same size as original
-            var newBitmap = new Bitmap(original.Width, original.Height);
+            _grayScaleAlgorithm = new GrayScaleAlgorithm(simpleBitmapSource);
 
-            for (int i = 0; i < original.Width; i++)
-            {
-                for (int j = 0; j < original.Height; j++)
-                {
-                    //get the pixel from the original image
-                    var originalColor = original.GetPixel(i, j);
-
-                    //create the grayscale version of the pixel
-                    var grayScale = (byte) ((originalColor.R*.3) + (originalColor.G*.59) + (originalColor.B*.11));
-
-                    //set the new image's pixel to the grayscale version
-                    newBitmap.SetPixel(i, j, Color.FromArgb(grayScale, grayScale, grayScale));
-                }
-            }
-
-            return newBitmap;
+            OriginalImage.Source = BitmapUtils.ConvertBitmap(_grayScaleAlgorithm.Bitmap);
         }
 
         private void HistogramEqualization_Click(object sender, RoutedEventArgs e)
         {
-            var newBitmap = MakeHistogramEqualization();
+            var newBitmap = new HistogramEqualization(_grayScaleAlgorithm).Execute();
 
             OutputImage.Source = BitmapUtils.ConvertBitmap(newBitmap);
-        }
-
-        private Bitmap MakeHistogramEqualization()
-        {
-            // calculate the frequency of the image
-            var frequencyOfImageAr = new int[256];
-            var grayscaledBitmap = _grayScaleBitmap;
-
-            for (var i = 0; i < grayscaledBitmap.Width; i++)
-            {
-                for (var j = 0; j < grayscaledBitmap.Height; j++)
-                {
-                    //get the pixel from the original image
-                    var originalColor = grayscaledBitmap.GetPixel(i, j);
-                    frequencyOfImageAr[originalColor.R]++;
-                }
-            }
-
-            // calculate the cuf function
-            var cdfArray = new int[256];
-            int numberOfPixelsInImage = grayscaledBitmap.Width*grayscaledBitmap.Height;
-            int cufCounter = numberOfPixelsInImage;
-            int cdfMinValue = numberOfPixelsInImage;
-
-            for (int i = 255; i >= 0; i--)
-            {
-                cdfArray[i] = cufCounter - frequencyOfImageAr[i];
-                cufCounter -= frequencyOfImageAr[i];
-                if (cdfArray[i] != 0 && cdfArray[i] < cdfMinValue)
-                {
-                    cdfMinValue = cdfArray[i];
-                }
-            }
-
-            var newBitmap = new Bitmap(_grayScaleBitmap.Width, _grayScaleBitmap.Height);
-            for (int i = 0; i < newBitmap.Width; i++)
-            {
-                for (int j = 0; j < newBitmap.Height; j++)
-                {
-                    //get the pixel from the original image
-                    var originalColor = grayscaledBitmap.GetPixel(i, j);
-
-                    //create the grayscale version of the pixel
-                    //int hi = (cdfAr[originalColor.R] - cdfMinValue) / (numberOfPixelsInImage)
-                    var hi =
-                        RoundAndClampColor((cdfArray[originalColor.R] - cdfMinValue)/
-                                           (double) (numberOfPixelsInImage - cdfMinValue)*255d);
-
-                    //set the new image's pixel to the grayscale version
-                    newBitmap.SetPixel(i, j, Color.FromArgb(hi, hi, hi));
-                }
-            }
-            return newBitmap;
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -157,64 +84,9 @@ namespace Grayscale
                 return;
             }
 
-            Bitmap newBitmap = FilterSource(targetCell, filterMatrix);
+            Bitmap newBitmap = new FilterAlgorithm(_grayScaleAlgorithm, filterMatrix, targetCell).Execute();
 
             OutputImage.Source = BitmapUtils.ConvertBitmap(newBitmap);
-        }
-
-        private Bitmap FilterSource(Point target, double[,] filterMatrix)
-        {
-            var grayscaledBitmap = _grayScaleBitmap;
-            var filterSize = filterMatrix.GetLength(0);
-
-            var newBitmap = new Bitmap(grayscaledBitmap.Width - filterSize, grayscaledBitmap.Height - filterSize);
-
-            var startI = target.X;
-            var startJ = target.Y;
-            var right = filterSize - target.X;
-            var down = filterSize - target.Y;
-
-            for (int i = startI; i < grayscaledBitmap.Width - right; i++)
-            {
-                for (int j = startJ; j < grayscaledBitmap.Height - down; j++)
-                {
-                    var filterd = CalculateFilterOnPoint(new Point(i - startI, j - startJ), filterMatrix);
-                    newBitmap.SetPixel(i - startI, j - startJ, Color.FromArgb(filterd, filterd, filterd));
-                }
-            }
-
-            return newBitmap;
-        }
-
-        private byte CalculateFilterOnPoint(Point target, double[,] filterMatrix)
-        {
-            double calculatedValue = 0;
-            var grayscaledBitmap = _grayScaleBitmap;
-
-            for (var i = 0; i < filterMatrix.GetLength(0); i++)
-            {
-                for (var j = 0; j < filterMatrix.GetLength(1); j++)
-                {
-                    var originalColor = grayscaledBitmap.GetPixel(target.X + i, target.Y + j);
-                    calculatedValue += originalColor.R*filterMatrix[i, j];
-                }
-            }
-
-            return RoundAndClampColor(calculatedValue);
-        }
-
-        private static byte RoundAndClampColor(double value)
-        {
-            var rounded = Math.Round(value);
-            if (rounded > 255)
-            {
-                rounded = 255;
-            }
-            else if (rounded < 0)
-            {
-                rounded = 0;
-            }
-            return (byte) rounded;
         }
     }
 
