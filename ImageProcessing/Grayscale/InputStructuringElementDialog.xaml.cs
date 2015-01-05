@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using Grayscale.Annotations;
+using Point = System.Drawing.Point;
 
 namespace Grayscale
 {
@@ -11,7 +12,10 @@ namespace Grayscale
     /// </summary>
     public partial class InputStructuringElementDialog
     {
-        public CheckBoxCell[,] Result { get; set; }
+        private CheckBoxCell[,] _checkBoxs;
+
+        public bool?[,] Result { get; set; }
+        public Point Target { get; set; }
 
         public InputStructuringElementDialog()
         {
@@ -39,7 +43,7 @@ namespace Grayscale
                 FilterGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
 
-            Result = new CheckBoxCell[(int) HeightSlider.Value, (int) WidthSlider.Value];
+            _checkBoxs = new CheckBoxCell[(int) HeightSlider.Value, (int) WidthSlider.Value];
 
             for (int i = 0; i < HeightSlider.Value; i++)
             {
@@ -55,16 +59,33 @@ namespace Grayscale
                     Grid.SetRow(cell, i);
                     Grid.SetColumn(cell, j);
 
-                    Result[i, j] = dataContext;
+                    _checkBoxs[i, j] = dataContext;
                     FilterGrid.Children.Add(cell);
                 }
             }
 
-            Result[(int) (HeightSlider.Value/2), (int) (WidthSlider.Value/2)].IsSelected = true;
+            _checkBoxs[(int) (HeightSlider.Value/2), (int) (WidthSlider.Value/2)].IsSelected = true;
         }
 
         private void OnOkClick(object sender, RoutedEventArgs e)
         {
+            int width = _checkBoxs.GetLength(0);
+            int height = _checkBoxs.GetLength(1);
+
+            Result = new bool?[width,height];
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    Result[i, j] = _checkBoxs[i, j].IsChecked;
+
+                    if (_checkBoxs[i, j].IsSelected)
+                    {
+                        Target = new Point(i,j);
+                    }
+                }
+            }
+
             DialogResult = true;
         }
     }
@@ -103,6 +124,7 @@ namespace Grayscale
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

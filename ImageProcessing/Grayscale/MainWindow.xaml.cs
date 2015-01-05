@@ -111,66 +111,80 @@ namespace Grayscale
             ExecuteAndSetImages(_grayScaleAlgorithm);
         }
 
-        private static CheckBoxCell[,] GetStructuringElement()
+        private static bool GetStructuringElement(out bool?[,] structuringElement, out Point target)
         {
             var dialog = new InputStructuringElementDialog();
 
             var dialogResult = dialog.ShowDialog();
 
+            structuringElement = dialog.Result;
+            target = dialog.Target;
+
             if (!dialogResult.HasValue || !dialogResult.Value)
             {
-                return null;
+                return false;
             }
 
-            return dialog.Result;
+            return true;
         }
 
         private void ErosionClick(object sender, RoutedEventArgs e)
         {
-            CheckBoxCell[,] checkBoxCells = GetStructuringElement();
+            Point target;
+            bool?[,] structuringElement;
 
-            if (checkBoxCells == null)
+            bool confirmed = GetStructuringElement(out structuringElement, out target);
+
+            if (!confirmed)
             {
                 return;
             }
 
-            ExecuteAndSetImages(new ErosionAlgorithm(_blackAndWhiteAlgorithm, checkBoxCells));
+            ExecuteAndSetImages(new ErosionAlgorithm(_blackAndWhiteAlgorithm, structuringElement, target));
         }
 
         private void DilationClick(object sender, RoutedEventArgs e)
         {
-            CheckBoxCell[,] checkBoxCells = GetStructuringElement();
+            Point target;
+            bool?[,] structuringElement;
 
-            if (checkBoxCells == null)
+            bool confirmed = GetStructuringElement(out structuringElement, out target);
+
+            if (!confirmed)
             {
                 return;
             }
 
-            ExecuteAndSetImages(new DilationAlgorithm(_blackAndWhiteAlgorithm, checkBoxCells));
+            ExecuteAndSetImages(new DilationAlgorithm(_blackAndWhiteAlgorithm, structuringElement, target));
         }
 
         private void OpeningClick(object sender, RoutedEventArgs e)
         {
-            CheckBoxCell[,] checkBoxCells = GetStructuringElement();
+            Point target;
+            bool?[,] structuringElement;
 
-            if (checkBoxCells == null)
+            bool confirmed = GetStructuringElement(out structuringElement, out target);
+
+            if (!confirmed)
             {
                 return;
             }
-
-            ExecuteAndSetImages(new OpeningAlgorithm(_blackAndWhiteAlgorithm, checkBoxCells));
+            ExecuteAndSetImages(new OpeningAlgorithm(_blackAndWhiteAlgorithm, structuringElement, target));
         }
 
         private void ClosingClick(object sender, RoutedEventArgs e)
         {
-            CheckBoxCell[,] checkBoxCells = GetStructuringElement();
+            Point target;
+            bool?[,] structuringElement;
 
-            if (checkBoxCells == null)
+            bool confirmed = GetStructuringElement(out structuringElement, out target);
+
+            if (!confirmed)
             {
                 return;
             }
 
-            ExecuteAndSetImages(new ClosingAlgorithm(_blackAndWhiteAlgorithm, checkBoxCells));
+            ExecuteAndSetImages(new ClosingAlgorithm(_blackAndWhiteAlgorithm, structuringElement, target));
         }
     }
 
