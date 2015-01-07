@@ -15,7 +15,7 @@ namespace Grayscale.Algorithms
             _structuringElement = structuringElement;
             _target = target;
         }
-
+        
         public override void Execute()
         {
             //make an empty bitmap the same size as original

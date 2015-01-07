@@ -36,15 +36,15 @@
       <ColumnDefinition />
     </Grid.ColumnDefinitions>
     <Label Grid.Row="0" Grid.Column="0" Content="Height:" />
-    <Slider Name="HeightSlider"
+    <Slider Name="HeightSlider" 
             Grid.Row="0" Grid.Column="1"
-            Value="3" Minimum="1" Maximum="10" Interval="1" IsSnapToTickEnabled="True"
+            Value="3" Minimum="1" Maximum="15" Interval="1" IsSnapToTickEnabled="True"
             ValueChanged="RangeBase_OnValueChanged" />
 
     <Label Grid.Row="1" Grid.Column="0" Content="Width:" />
     <Slider Name="WidthSlider"
             Grid.Row="1" Grid.Column="1"
-            Value="3" Minimum="1" Maximum="10" Interval="1" IsSnapToTickEnabled="True"
+            Value="3" Minimum="1" Maximum="15" Interval="1" IsSnapToTickEnabled="True"
             ValueChanged="RangeBase_OnValueChanged" />
 
     <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">

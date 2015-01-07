@@ -186,6 +186,8 @@ namespace Grayscale
 
             ExecuteAndSetImages(new ClosingAlgorithm(_blackAndWhiteAlgorithm, structuringElement, target));
         }
+
+        
     }
 
     public class BitmapUtils
