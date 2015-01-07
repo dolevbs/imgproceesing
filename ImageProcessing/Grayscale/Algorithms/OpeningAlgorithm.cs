@@ -16,7 +16,7 @@ namespace Grayscale.Algorithms
         }
 
         public override void Execute()
-        {
+        {            
         }
     }
 }

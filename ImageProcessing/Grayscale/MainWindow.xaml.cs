@@ -30,7 +30,7 @@ namespace Grayscale
             var openFileDialog = new OpenFileDialog
             {
                 Title = "Open Image",
-                Filter = "Image Files (*.jpg,*.jpeg,*.png)|*.jpg;*.jpeg;*.png",
+                Filter = "Image Files (*.jpg,*.jpeg,*.png,*.gif)|*.jpg;*.jpeg;*.png;*.gif",
                 Multiselect = false
             };
 
