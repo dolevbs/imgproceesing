@@ -6,9 +6,9 @@ namespace Grayscale.AlgorithmsBase
     {
         public SimpleBitmapSource(Bitmap bitmap)
         {
-            Bitmap = bitmap;
+            Result = bitmap;
         }
 
-        public Bitmap Bitmap { get; private set; }
+        public Bitmap Result { get; private set; }
     }
 }

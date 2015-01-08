@@ -1,33 +1,37 @@
 using System.Drawing;
 using Grayscale.AlgorithmsBase;
-using System.Diagnostics;
 
 namespace Grayscale.Algorithms
 {
-    public class ErosionAlgorithm : UseBlackAndWhiteAlgorithm
+    public class ErosionAlgorithm : BitmapAlgorithm, IBlackAndWhiteBitmapSource
     {
         private readonly bool?[,] _structuringElement;
         private readonly Point _target;
 
-        public ErosionAlgorithm(BlackAndWhiteAlgorithm bitmapSource, bool?[,] structuringElement, Point target)
+        public ErosionAlgorithm(IBlackAndWhiteBitmapSource bitmapSource, bool?[,] structuringElement, Point target)
             : base(bitmapSource)
         {
             _structuringElement = structuringElement;
             _target = target;
         }
-        
-        public override void Execute()
+
+        protected override Bitmap Execute()
         {
+            Bitmap bitmap = BitmapSource.Result;
             //make an empty bitmap the same size as original
-            var newBitmap = new Bitmap(BitmapSource.Bitmap.Width - _structuringElement.GetLength(0) + 1, BitmapSource.Bitmap.Height - _structuringElement.GetLength(1) + 1);
+            var newBitmap = new Bitmap(bitmap.Width - _structuringElement.GetLength(0) + 1,
+                bitmap.Height - _structuringElement.GetLength(1) + 1);
             int outputI = 0;
-            int outputJ = 0;
-            for (int i = _target.X; i < (BitmapSource.Bitmap.Width - _structuringElement.GetLength(0) + 1 + _target.X); i++, outputI++)
+            for (int i = _target.X;
+                i < (bitmap.Width - _structuringElement.GetLength(0) + 1 + _target.X);
+                i++, outputI++)
             {
-                outputJ = 0;
-                for (int j = _target.Y; j < (BitmapSource.Bitmap.Height - _structuringElement.GetLength(1) + 1 + _target.Y); j++, outputJ++)
+                int outputJ = 0;
+                for (int j = _target.Y;
+                    j < (bitmap.Height - _structuringElement.GetLength(1) + 1 + _target.Y);
+                    j++, outputJ++)
                 {
-                    bool isFitting = isFitToStructure(i, j);
+                    bool isFitting = IsFitToStructure(i, j);
                     byte curColor = 0;
                     if (isFitting)
                     {
@@ -39,12 +43,12 @@ namespace Grayscale.Algorithms
                 }
             }
 
-            Result = newBitmap;   
+            return newBitmap;
         }
 
-        private bool isFitToStructure(int curI, int curj)
+        private bool IsFitToStructure(int curI, int curj)
         {
-            Point imgBase = new Point(curI -_target.X, curj - _target.Y );
+            var imgBase = new Point(curI - _target.X, curj - _target.Y);
             for (int i = 0; i < _structuringElement.GetLength(0); i++)
             {
                 for (int j = 0; j < _structuringElement.GetLength(1); j++)
@@ -55,7 +59,7 @@ namespace Grayscale.Algorithms
                         continue;
                     }
 
-                    var curPixel = BitmapSource.Bitmap.GetPixel(imgBase.X + i, imgBase.Y + j);
+                    var curPixel = BitmapSource.Result.GetPixel(imgBase.X + i, imgBase.Y + j);
                     bool curPixelBool = (255 == curPixel.R);
                     if (curPixelBool != _structuringElement[i, j])
                     {

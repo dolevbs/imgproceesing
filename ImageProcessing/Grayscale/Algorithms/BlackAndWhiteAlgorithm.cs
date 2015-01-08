@@ -3,24 +3,26 @@ using Grayscale.AlgorithmsBase;
 
 namespace Grayscale.Algorithms
 {
-    public class BlackAndWhiteAlgorithm : UseGrayScaleAlgorithm, IBitmapSource
+    public class BlackAndWhiteAlgorithm : UseGrayScaleAlgorithm, IBlackAndWhiteBitmapSource
     {
-        public BlackAndWhiteAlgorithm(GrayScaleAlgorithm bitmapSource)
+        public BlackAndWhiteAlgorithm(IGrayScaleBitmapSource bitmapSource)
             : base(bitmapSource)
         {
         }
 
-        public override void Execute()
+        protected override Bitmap Execute()
         {
             //make an empty bitmap the same size as original
-            var newBitmap = new Bitmap(BitmapSource.Bitmap.Width, BitmapSource.Bitmap.Height);
+            Bitmap bitmap = BitmapSource.Result;
 
-            for (int i = 0; i < BitmapSource.Bitmap.Width; i++)
+            var newBitmap = new Bitmap(bitmap.Width, bitmap.Height);
+
+            for (int i = 0; i < bitmap.Width; i++)
             {
-                for (int j = 0; j < BitmapSource.Bitmap.Height; j++)
+                for (int j = 0; j < bitmap.Height; j++)
                 {
                     //get the pixel from the original image
-                    var originalColor = BitmapSource.Bitmap.GetPixel(i, j);
+                    var originalColor = bitmap.GetPixel(i, j);
 
                     var scale = originalColor.R < 90 ? 0 : 255;
 
@@ -29,20 +31,7 @@ namespace Grayscale.Algorithms
                 }
             }
 
-            Result = newBitmap;
-        }
-
-        public Bitmap Bitmap
-        {
-            get
-            {
-                if (Result == null)
-                {
-                    Execute();
-                }
-
-                return Result;
-            }
+            return newBitmap;
         }
     }
 }

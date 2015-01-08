@@ -59,7 +59,6 @@
     <Compile Include="Algorithms\BlackAndWhiteAlgorithm.cs" />
     <Compile Include="AlgorithmsBase\IBitmapSource.cs" />
     <Compile Include="AlgorithmsBase\SimpleBitmapSource.cs" />
-    <Compile Include="AlgorithmsBase\UseBlackAndWhiteAlgorithm.cs" />
     <Compile Include="AlgorithmsBase\UseGrayScaleAlgorithm.cs" />
     <Page Include="InputFilterDialog.xaml">
       <SubType>Designer</SubType>
@@ -73,10 +72,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Algorithms\ClosingAlgorithm.cs" />
     <Compile Include="Algorithms\DilationAlgorithm.cs" />
     <Compile Include="Algorithms\ErosionAlgorithm.cs" />
-    <Compile Include="Algorithms\OpeningAlgorithm.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

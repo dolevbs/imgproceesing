@@ -2,8 +2,10 @@ using System.Drawing;
 
 namespace Grayscale.AlgorithmsBase
 {
-    public abstract class BitmapAlgorithm
+    public abstract class BitmapAlgorithm : IBitmapSource
     {
+        private Bitmap _result;
+
         protected BitmapAlgorithm(IBitmapSource bitmapSource)
         {
             BitmapSource = bitmapSource;
@@ -11,8 +13,14 @@ namespace Grayscale.AlgorithmsBase
 
         public IBitmapSource BitmapSource { get; private set; }
 
-        public abstract void Execute();
+        protected abstract Bitmap Execute();
 
-        public Bitmap Result { get; protected set; }
+        public Bitmap Result
+        {
+            get
+            {
+                return _result ?? (_result = Execute());
+            }
+        }
     }
 }

@@ -8,18 +8,18 @@ namespace Grayscale.Algorithms
         private readonly double[,] _filterMatrix;
         private readonly Point _target;
 
-        public FilterAlgorithm(GrayScaleAlgorithm grayScaleBitmap, double[,] filterMatrix, Point target)
+        public FilterAlgorithm(IGrayScaleBitmapSource grayScaleBitmap, double[,] filterMatrix, Point target)
             : base(grayScaleBitmap)
         {
             _filterMatrix = filterMatrix;
             _target = target;
         }
 
-        public override void Execute()
+        protected override Bitmap Execute()
         {
             var filterSize = _filterMatrix.GetLength(0);
 
-            Bitmap grayScaleBitmap = BitmapSource.Bitmap;
+            Bitmap grayScaleBitmap = BitmapSource.Result;
 
             var newBitmap = new Bitmap(grayScaleBitmap.Width - filterSize, grayScaleBitmap.Height - filterSize);
 
@@ -37,7 +37,7 @@ namespace Grayscale.Algorithms
                 }
             }
 
-            Result = newBitmap;
+            return newBitmap;
         }
 
         private byte CalculateFilterOnPoint(Point target, double[,] filterMatrix, Bitmap grayScaleBitmap)

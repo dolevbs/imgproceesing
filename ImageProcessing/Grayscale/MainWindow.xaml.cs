@@ -66,9 +66,7 @@ namespace Grayscale
 
         private void ExecuteAndSetImages(BitmapAlgorithm algorithem)
         {
-            algorithem.Execute();
-
-            OriginalImage.Source = BitmapUtils.ConvertBitmap(algorithem.BitmapSource.Bitmap);
+            OriginalImage.Source = BitmapUtils.ConvertBitmap(algorithem.BitmapSource.Result);
             OutputImage.Source = BitmapUtils.ConvertBitmap(algorithem.Result);
         }
 
@@ -169,7 +167,11 @@ namespace Grayscale
             {
                 return;
             }
-            ExecuteAndSetImages(new OpeningAlgorithm(_blackAndWhiteAlgorithm, structuringElement, target));
+
+            var erosionAlgorithm = new ErosionAlgorithm(_blackAndWhiteAlgorithm, structuringElement, target);
+            var dilationAlgorithm = new DilationAlgorithm(erosionAlgorithm, structuringElement, target);
+
+            ExecuteAndSetImages(dilationAlgorithm);
         }
 
         private void ClosingClick(object sender, RoutedEventArgs e)
@@ -184,7 +186,10 @@ namespace Grayscale
                 return;
             }
 
-            ExecuteAndSetImages(new ClosingAlgorithm(_blackAndWhiteAlgorithm, structuringElement, target));
+            var dilationAlgorithm = new DilationAlgorithm(_blackAndWhiteAlgorithm, structuringElement, target);
+            var erosionAlgorithm = new ErosionAlgorithm(dilationAlgorithm, structuringElement, target);
+
+            ExecuteAndSetImages(erosionAlgorithm);
         }
 
         

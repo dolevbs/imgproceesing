@@ -2,8 +2,18 @@ using System.Drawing;
 
 namespace Grayscale.AlgorithmsBase
 {
+    public interface IBlackAndWhiteBitmapSource : IGrayScaleBitmapSource
+    {
+        
+    }
+
+    public interface IGrayScaleBitmapSource : IBitmapSource
+    {
+         
+    }
+
     public interface IBitmapSource
     {
-        Bitmap Bitmap { get; }
+        Bitmap Result { get; }
     }
 }

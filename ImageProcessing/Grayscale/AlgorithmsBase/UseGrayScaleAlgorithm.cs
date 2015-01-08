@@ -5,7 +5,7 @@ namespace Grayscale.AlgorithmsBase
 {
     public abstract class UseGrayScaleAlgorithm : BitmapAlgorithm
     {
-        protected UseGrayScaleAlgorithm(GrayScaleAlgorithm bitmapSource)
+        protected UseGrayScaleAlgorithm(IGrayScaleBitmapSource bitmapSource)
             : base(bitmapSource)
         {
         }

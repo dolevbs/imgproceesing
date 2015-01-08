@@ -5,17 +5,17 @@ namespace Grayscale.Algorithms
 {
     public class HistogramEqualization : UseGrayScaleAlgorithm
     {
-        public HistogramEqualization(GrayScaleAlgorithm grayScaleBitmap)
+        public HistogramEqualization(IGrayScaleBitmapSource grayScaleBitmap)
             : base(grayScaleBitmap)
         {
         }
 
-        public override void Execute()
+        protected override Bitmap Execute()
         {
             // calculate the frequency of the image
             var frequencyOfImageAr = new int[256];
 
-            Bitmap bitmap = BitmapSource.Bitmap;
+            Bitmap bitmap = BitmapSource.Result;
 
             for (var i = 0; i < bitmap.Width; i++)
             {
@@ -61,7 +61,7 @@ namespace Grayscale.Algorithms
                 }
             }
 
-            Result = newBitmap;
+            return newBitmap;
         }
     }
 }
