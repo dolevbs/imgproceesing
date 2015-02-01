@@ -19,6 +19,7 @@ namespace Grayscale
     {
         private GrayScaleAlgorithm _grayScaleAlgorithm;
         private BlackAndWhiteAlgorithm _blackAndWhiteAlgorithm;
+        private SimpleBitmapSource _simpleBitmapSource;
 
         public MainWindow()
         {
@@ -49,9 +50,9 @@ namespace Grayscale
 
             var bitmap = new Bitmap(openFileDialog.FileName);
 
-            var simpleBitmapSource = new SimpleBitmapSource(bitmap);
+            _simpleBitmapSource = new SimpleBitmapSource(bitmap);
 
-            _grayScaleAlgorithm = new GrayScaleAlgorithm(simpleBitmapSource);
+            _grayScaleAlgorithm = new GrayScaleAlgorithm(_simpleBitmapSource);
             _blackAndWhiteAlgorithm = new BlackAndWhiteAlgorithm(_grayScaleAlgorithm);
 
             OriginalImage.Source = BitmapUtils.ConvertBitmap(bitmap);
@@ -192,7 +193,13 @@ namespace Grayscale
             ExecuteAndSetImages(erosionAlgorithm);
         }
 
-        
+
+        private void RotateClick(object sender, RoutedEventArgs e)
+        {
+            var rotateAlgorithm = new RotateAlgorithm(_simpleBitmapSource, 45);
+
+            ExecuteAndSetImages(rotateAlgorithm);
+        }
     }
 
     public class BitmapUtils
