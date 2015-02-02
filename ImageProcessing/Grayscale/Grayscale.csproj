@@ -60,11 +60,15 @@
     <Compile Include="AlgorithmsBase\IBitmapSource.cs" />
     <Compile Include="AlgorithmsBase\SimpleBitmapSource.cs" />
     <Compile Include="AlgorithmsBase\UseGrayScaleAlgorithm.cs" />
-    <Page Include="InputFilterDialog.xaml">
+    <Page Include="Dialogs\InputDegreesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="InputStructuringElementDialog.xaml">
+    <Page Include="Dialogs\InputFilterDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\InputStructuringElementDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -82,10 +86,13 @@
     <Compile Include="Algorithms\FilterAlgorithm.cs" />
     <Compile Include="Algorithms\GrayScaleAlgorithm.cs" />
     <Compile Include="Algorithms\HistogramEqualization.cs" />
-    <Compile Include="InputFilterDialog.xaml.cs">
+    <Compile Include="Dialogs\InputDegreesDialog.xaml.cs">
+      <DependentUpon>InputDegreesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\InputFilterDialog.xaml.cs">
       <DependentUpon>InputFilterDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InputStructuringElementDialog.xaml.cs">
+    <Compile Include="Dialogs\InputStructuringElementDialog.xaml.cs">
       <DependentUpon>InputStructuringElementDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">

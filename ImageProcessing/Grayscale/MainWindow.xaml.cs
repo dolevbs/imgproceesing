@@ -7,6 +7,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Grayscale.Algorithms;
 using Grayscale.AlgorithmsBase;
+using Grayscale.Dialogs;
 using Microsoft.Win32;
 using Point = System.Drawing.Point;
 
@@ -196,7 +197,16 @@ namespace Grayscale
 
         private void RotateClick(object sender, RoutedEventArgs e)
         {
-            var rotateAlgorithm = new RotateAlgorithm(_simpleBitmapSource, 45);
+            var dialog = new InputDegreesDialog();
+
+            var dialogResult = dialog.ShowDialog();
+
+            if (!dialogResult.HasValue || !dialogResult.Value)
+            {
+                return;
+            }
+
+            var rotateAlgorithm = new RotateAlgorithm(_simpleBitmapSource, dialog.Degrees);
 
             ExecuteAndSetImages(rotateAlgorithm);
         }

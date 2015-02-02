@@ -70,7 +70,6 @@ namespace Grayscale
         {
             DialogResult = true;
 
-
             FilterMatrix = new double[SelectedSize, SelectedSize];
             for (int i = 0; i < SelectedSize; i++)
             {

@@ -64,7 +64,7 @@ namespace Grayscale.Algorithms
                         var rotateXY = RotateXY(sourcePoint, degrees, xOffset, yOffset);
 
                         //Calculate Blue Rotation 
-                        var resultXY = (int)(Math.Round((rotateXY.Y * sourceData.Stride) + (rotateXY.X * 4.0)));
+                        var resultXY = (int) (Math.Round((rotateXY.Y*sourceData.Stride) + (rotateXY.X*4.0)));
 
                         if (imageBounds.Contains(rotateXY) &&
                             resultXY >= 0)
