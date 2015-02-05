@@ -14,12 +14,12 @@ using Point = System.Drawing.Point;
 namespace Grayscale
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
-        private GrayScaleAlgorithm _grayScaleAlgorithm;
         private BlackAndWhiteAlgorithm _blackAndWhiteAlgorithm;
+        private GrayScaleAlgorithm _grayScaleAlgorithm;
         private SimpleBitmapSource _simpleBitmapSource;
 
         public MainWindow()
@@ -36,7 +36,7 @@ namespace Grayscale
                 Multiselect = false
             };
 
-            var showDialog = openFileDialog.ShowDialog();
+            bool? showDialog = openFileDialog.ShowDialog();
             if (!showDialog.HasValue || !showDialog.Value)
             {
                 return;
@@ -81,7 +81,7 @@ namespace Grayscale
         {
             var inputFilterDialog = new InputFilterDialog();
 
-            var dialogResult = inputFilterDialog.ShowDialog();
+            bool? dialogResult = inputFilterDialog.ShowDialog();
 
             if (!dialogResult.HasValue || !dialogResult.Value)
             {
@@ -115,7 +115,7 @@ namespace Grayscale
         {
             var dialog = new InputStructuringElementDialog();
 
-            var dialogResult = dialog.ShowDialog();
+            bool? dialogResult = dialog.ShowDialog();
 
             structuringElement = dialog.Result;
             target = dialog.Target;
@@ -199,7 +199,7 @@ namespace Grayscale
         {
             var dialog = new InputDegreesDialog();
 
-            var dialogResult = dialog.ShowDialog();
+            bool? dialogResult = dialog.ShowDialog();
 
             if (!dialogResult.HasValue || !dialogResult.Value)
             {
@@ -209,6 +209,20 @@ namespace Grayscale
             var rotateAlgorithm = new RotateAlgorithm(_simpleBitmapSource, dialog.Degrees);
 
             ExecuteAndSetImages(rotateAlgorithm);
+        }
+
+        private void ZoomOutClick(object sender, RoutedEventArgs e)
+        {
+            var zoomOutAlgorithm = new ZoomOutAlgorithm(_simpleBitmapSource, 2, 2);
+
+            ExecuteAndSetImages(zoomOutAlgorithm);
+        }
+
+        private void ZoomInClick(object sender, RoutedEventArgs e)
+        {
+            var zoomOutAlgorithm = new ZoomInAlgorithm(_simpleBitmapSource, 0.5, 0.5);
+
+            ExecuteAndSetImages(zoomOutAlgorithm);
         }
     }
 

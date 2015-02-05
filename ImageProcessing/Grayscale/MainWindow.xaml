@@ -5,7 +5,7 @@
 
   <DockPanel>
     <Menu DockPanel.Dock="Top">
-      <MenuItem Header="File">
+      <MenuItem Header="_File">
         <MenuItem Header="_LoadImage" Click="Browse_OnClick" />
         <MenuItem Header="_Exit" Click="Exit_Click" />
       </MenuItem>
@@ -22,7 +22,9 @@
         <MenuItem Header="_Closing" Click="ClosingClick" />
       </MenuItem>
       <MenuItem Header="Geometric _transformation">
-        <MenuItem Header="Rotate" Click="RotateClick"></MenuItem>
+        <MenuItem Header="_Rotate" Click="RotateClick" />
+        <MenuItem Header="_Zoom Out" Click="ZoomOutClick" />
+        <MenuItem Header="_Zoom In" Click="ZoomInClick" />
       </MenuItem>
     </Menu>
     <Grid>

@@ -79,6 +79,8 @@
     <Compile Include="Algorithms\DilationAlgorithm.cs" />
     <Compile Include="Algorithms\ErosionAlgorithm.cs" />
     <Compile Include="Algorithms\RotateAlgorithm.cs" />
+    <Compile Include="Algorithms\ZoomInAlgorithm.cs" />
+    <Compile Include="Algorithms\ZoomOutAlgorithm.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

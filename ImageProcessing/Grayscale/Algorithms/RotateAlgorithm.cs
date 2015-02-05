@@ -24,11 +24,11 @@ namespace Grayscale.Algorithms
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
 
-            var pixelBuffer = new byte[sourceData.Stride*
+            var pixelBuffer = new byte[sourceData.Stride *
                                        sourceData.Height];
 
 
-            var resultBuffer = new byte[sourceData.Stride*sourceData.Height];
+            var resultBuffer = new byte[sourceData.Stride * sourceData.Height];
 
 
             Marshal.Copy(sourceData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
@@ -37,11 +37,11 @@ namespace Grayscale.Algorithms
             sourceBitmap.UnlockBits(sourceData);
 
             //Convert to Radians 
-            var degrees = _degrees*Math.PI/180.0;
+            var degrees = _degrees * Math.PI / 180.0;
 
             //Calculate Offset in order to rotate on image middle 
-            var xOffset = (int) (sourceBitmap.Width/2.0);
-            var yOffset = (int) (sourceBitmap.Height/2.0);
+            var xOffset = (int)(sourceBitmap.Width / 2.0);
+            var yOffset = (int)(sourceBitmap.Height / 2.0);
 
 
             var sourcePoint = new Point();
@@ -54,7 +54,7 @@ namespace Grayscale.Algorithms
             {
                 for (int col = 0; col < sourceBitmap.Width; col++)
                 {
-                    int sourceXY = row*sourceData.Stride + col*4;
+                    int sourceXY = row * sourceData.Stride + col * 4;
 
                     sourcePoint.X = col;
                     sourcePoint.Y = row;
@@ -64,7 +64,7 @@ namespace Grayscale.Algorithms
                         var rotateXY = RotateXY(sourcePoint, degrees, xOffset, yOffset);
 
                         //Calculate Blue Rotation 
-                        var resultXY = (int) (Math.Round((rotateXY.Y*sourceData.Stride) + (rotateXY.X*4.0)));
+                        var resultXY = (int)(Math.Round((rotateXY.Y * sourceData.Stride) + (rotateXY.X * 4.0)));
 
                         if (imageBounds.Contains(rotateXY) &&
                             resultXY >= 0)
@@ -87,7 +87,7 @@ namespace Grayscale.Algorithms
 
 
                         //Calculate Green Rotation 
-                        resultXY = (int) (Math.Round((rotateXY.Y*sourceData.Stride) + (rotateXY.X*4.0)));
+                        resultXY = (int)(Math.Round((rotateXY.Y * sourceData.Stride) + (rotateXY.X * 4.0)));
 
                         if (imageBounds.Contains(rotateXY) && resultXY >= 0)
                         {
@@ -109,7 +109,7 @@ namespace Grayscale.Algorithms
 
 
                         //Calculate Red Rotation 
-                        resultXY = (int) (Math.Round((rotateXY.Y*sourceData.Stride) + (rotateXY.X*4.0)));
+                        resultXY = (int)(Math.Round((rotateXY.Y * sourceData.Stride) + (rotateXY.X * 4.0)));
 
 
                         if (imageBounds.Contains(rotateXY) && resultXY >= 0)
@@ -160,8 +160,8 @@ namespace Grayscale.Algorithms
 
             var result = new Point
             {
-                X = (int) (Math.Round(x*Math.Cos(degrees) - y*Math.Sin(degrees))) + offsetX,
-                Y = (int) (Math.Round(x*Math.Sin(degrees) + y*Math.Cos(degrees))) + offsetY
+                X = (int)(Math.Round(x * Math.Cos(degrees) - y * Math.Sin(degrees))) + offsetX,
+                Y = (int)(Math.Round(x * Math.Sin(degrees) + y * Math.Cos(degrees))) + offsetY
             };
 
             return result;
