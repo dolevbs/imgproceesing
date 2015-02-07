@@ -6,18 +6,30 @@ namespace Grayscale.Algorithms
 {
     public class ZoomInAlgorithm : BitmapAlgorithm
     {
-        private readonly double _widthFactor;
-        private readonly double _heightFactor;
+        private readonly double _widthMultiplier;
+        private readonly double _heightMultiplier;
 
         public ZoomInAlgorithm(IBitmapSource bitmapSource, double widthFactor, double heightFactor) : base(bitmapSource)
         {
-            _widthFactor = widthFactor;
-            _heightFactor = heightFactor;
+            _widthMultiplier = widthFactor;
+            _heightMultiplier = heightFactor;
         }
 
         protected override Bitmap Execute()
-        {
-            throw new NotImplementedException();
+        {   
+            Bitmap src = BitmapSource.Result;
+
+            int outputWidth = (int) Math.Round(src.Width * _widthMultiplier);
+            int outputHeight = (int) Math.Round(src.Height * _heightMultiplier);
+            
+            Bitmap b = new Bitmap( outputWidth, outputHeight ) ;
+            
+            using(Graphics g = Graphics.FromImage( (Image ) b ))
+            {
+                g.DrawImage(src, 0, 0, outputWidth, outputHeight);
+            }
+
+            return b ;
         }
     }
 }

@@ -19,7 +19,19 @@ namespace Grayscale.Algorithms
 
         protected override Bitmap Execute()
         {
-            throw new NotImplementedException();
+            Bitmap src = BitmapSource.Result;
+
+            int outputWidth = (int)Math.Round(src.Width * _widthMultiplier);
+            int outputHeight = (int)Math.Round(src.Height * _heightMultiplier);
+
+            Bitmap b = new Bitmap(outputWidth, outputHeight);
+
+            using (Graphics g = Graphics.FromImage((Image)b))
+            {
+                g.DrawImage(src, 0, 0, outputWidth, outputHeight);
+            }
+
+            return b;
         }
     }
 }

@@ -21,20 +21,19 @@
         <MenuItem Header="_Opening" Click="OpeningClick" />
         <MenuItem Header="_Closing" Click="ClosingClick" />
       </MenuItem>
-      <MenuItem Header="Geometric _transformation">
-        <MenuItem Header="_Rotate" Click="RotateClick" />
-        <MenuItem Header="_Zoom Out" Click="ZoomOutClick" />
-        <MenuItem Header="_Zoom In" Click="ZoomInClick" />
-      </MenuItem>
-    </Menu>
+            <MenuItem Header="Geometric _transformation">
+                <MenuItem Header="_Rotate" Click="RotateClick" />
+                <MenuItem Header="_Resize" Click="ZoomOutClick" />                
+            </MenuItem>
+        </Menu>
     <Grid>
       <Grid.ColumnDefinitions>
         <ColumnDefinition />
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
 
-      <Image Name="OriginalImage" Grid.Row="0" Grid.Column="0" />
-      <Image Name="OutputImage" Grid.Row="0" Grid.Column="1" />
+      <Image Name="OriginalImage" Grid.Row="0" Grid.Column="0" Stretch="None" />
+      <Image Name="OutputImage" Grid.Row="0" Grid.Column="1" Stretch="None" MouseRightButtonDown="rightClickOutputImage" />
 
     </Grid>
   </DockPanel>

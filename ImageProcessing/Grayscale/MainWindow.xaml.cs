@@ -213,7 +213,14 @@ namespace Grayscale
 
         private void ZoomOutClick(object sender, RoutedEventArgs e)
         {
-            var zoomOutAlgorithm = new ZoomOutAlgorithm(_simpleBitmapSource, 2, 2);
+            var dialog = new InputResizeDialog();
+            bool? dialogResult = dialog.ShowDialog();
+
+            if (!dialogResult.HasValue || !dialogResult.Value)
+            {
+                return;
+            }
+            var zoomOutAlgorithm = new ZoomOutAlgorithm(_simpleBitmapSource, dialog.WidthPrecentage / 100.0, dialog.HeightPrecentage / 100.0);
 
             ExecuteAndSetImages(zoomOutAlgorithm);
         }
@@ -223,6 +230,29 @@ namespace Grayscale
             var zoomOutAlgorithm = new ZoomInAlgorithm(_simpleBitmapSource, 0.5, 0.5);
 
             ExecuteAndSetImages(zoomOutAlgorithm);
+        }
+
+        private void rightClickOutputImage(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {            
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.FileName = "OutputImage";
+            dialog.DefaultExt = "bmp";
+            dialog.ValidateNames = true;
+
+            dialog.Filter = "Bitmap Image (.bmp)|*.bmp|Gif Image (.gif)|*.gif |JPEG Image (.jpeg)|*.jpeg |Png Image (.png)|*.png |Tiff Image (.tiff)|*.tiff |Wmf Image (.wmf)|*.wmf";
+            bool? showDialog = dialog.ShowDialog();
+            if (!showDialog.HasValue || !showDialog.Value)
+            {
+                return;
+            }
+
+            Bitmap outputBitmap = BitmapUtils.BitmapFromSource((BitmapSource)OutputImage.Source);
+            using (var bitmap = new Bitmap(outputBitmap.Width, outputBitmap.Height))
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.DrawImage(outputBitmap, 0, 0);
+                bitmap.Save(dialog.FileName);
+            }       
         }
     }
 
@@ -246,6 +276,18 @@ namespace Grayscale
             }
 
             return bs;
+        }
+        public static Bitmap BitmapFromSource(BitmapSource bitmapsource)
+        {
+            Bitmap bitmap;
+            using (var outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapsource));
+                enc.Save(outStream);
+                bitmap = new Bitmap(outStream);
+            }
+            return bitmap;
         }
     }
 }

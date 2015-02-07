@@ -68,6 +68,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\InputResizeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\InputStructuringElementDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -93,6 +97,9 @@
     </Compile>
     <Compile Include="Dialogs\InputFilterDialog.xaml.cs">
       <DependentUpon>InputFilterDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\InputResizeDialog.xaml.cs">
+      <DependentUpon>InputResizeDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\InputStructuringElementDialog.xaml.cs">
       <DependentUpon>InputStructuringElementDialog.xaml</DependentUpon>

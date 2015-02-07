@@ -15,19 +15,22 @@ using System.Windows.Shapes;
 namespace Grayscale.Dialogs
 {
     /// <summary>
-    /// Interaction logic for InputDegreesDialog.xaml
+    /// Interaction logic for InputResizeDialog.xaml
     /// </summary>
-    public partial class InputDegreesDialog : Window
+    public partial class InputResizeDialog : Window
     {
-        public InputDegreesDialog()
+        
+        public InputResizeDialog()
         {
-            Degrees = 0;
+            WidthPrecentage = 100;
+            HeightPrecentage = 100;
             InitializeComponent();
         }
 
-        public float Degrees { get; set; }
+        public float WidthPrecentage { get; set; }
+        public double HeightPrecentage { get; set; }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
